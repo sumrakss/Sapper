@@ -23,7 +23,7 @@ namespace Miner
         static Button[,] buttons = new Button[size1, size2];
         static List<Button> flags = new List<Button>();
         static int[,] cellStatus = new int[size1, size2];
-        static List<Button> list = new List<Button>(); // список проверенных клеток
+        static List<Button> visitedCell = new List<Button>(); // список проверенных клеток
         enum TimeControl { start, stop } // управление таймером
 
         public MainWindow()
@@ -31,7 +31,7 @@ namespace Miner
             InitializeComponent();
             btnRank.Click += ButtonRankClick;
             btnNew.Click += ButtonNewClick;
-            ChangeLevel(9, 9, 5);
+            ChangeLevel(9, 9, 10);
         }
 
         private void Timer(TimeControl value)
@@ -49,7 +49,7 @@ namespace Miner
             firstClick = false;
             freeCell = 0;
             flags = new List<Button>();
-            list = new List<Button>();
+            visitedCell = new List<Button>();
             map = new int[size1, size2];
             cellStatus = new int[size1, size2];
             int count = 0; // количество единиц в массиве
@@ -107,6 +107,10 @@ namespace Miner
                 CellPainter(i - 1, j + 1);
             if (CellExist(j - 1, size2))
                 CellPainter(i, j - 1);
+
+            if (CellExist(i, size1) && CellExist(j, size2))
+                CellPainter(i, j);
+
             if (CellExist(j + 1, size2))
                 CellPainter(i, j + 1);
             if (CellExist(i + 1, size1) && CellExist(j - 1, size2))
@@ -117,19 +121,9 @@ namespace Miner
                 CellPainter(i + 1, j + 1);
         }
 
-        private void Image(string img, int i = 0, int j = 0)
-        {
-            ImageBrush mineImg = new ImageBrush();
-            mineImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\" + img));
-            for (int x = 0; x < size1; x++)
-                for (int y = 0; y < size2; y++)
-                    if (map[x, y] == 1)
-                        buttons[x, y].Background = mineImg;
-        }
-
         private void Test(int i, int j)
         {
-            if (!list.Contains(buttons[i, j]))
+            if (!visitedCell.Contains(buttons[i, j]) && !flags.Contains(buttons[i, j]))
             {
                 freeCell++;
                 timePanel.Content = freeCell;
@@ -142,7 +136,7 @@ namespace Miner
                     MessageBox.Show("Это успех!");
                 }
             }
-            list.Add(buttons[i, j]);
+            visitedCell.Add(buttons[i, j]);
         }
 
         private void CellPainter(int i, int j)
@@ -151,7 +145,7 @@ namespace Miner
             switch (cellStatus[i, j])
             {
                 case 0:
-                    if (!list.Contains(buttons[i, j]))
+                    if (!visitedCell.Contains(buttons[i, j]))
                     {
                         Test(i, j);
                         EmptySpaces(i, j);
@@ -192,6 +186,25 @@ namespace Miner
             }
         }
 
+        private void Image(string img, int i = 0, int j = 0)
+        {
+            ImageBrush mineImg = new ImageBrush();
+            mineImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\" + img));
+            for (int x = 0; x < size1; x++)
+                for (int y = 0; y < size2; y++)
+                {
+                    if (flags.Contains(buttons[x, y])) // если флаг установлен неверно
+                    {
+                        ImageBrush testImg = new ImageBrush();
+                        testImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\ErrMine.bmp"));
+                        buttons[x, y].Background = testImg;
+                    }
+
+                    if (map[x, y] == 1)
+                        buttons[x, y].Background = mineImg;
+                }
+        }
+
         private void ChangeLevel(int s1, int s2, int mineLvl)
         {
             size1 = s1;
@@ -207,7 +220,6 @@ namespace Miner
                 {
                     Button btn = new Button();
                     Field.Children.Add(btn);
-                    btn.Content = ""; //
                     btn.Style = FindResource("btnStyle") as Style;
                     btn.Click += MouseLeftButtonDown;
                     btn.MouseRightButtonDown += MouseRightButtonDown;
@@ -284,11 +296,13 @@ namespace Miner
             {
                 btn.Background = SystemColors.ControlLightBrush;
                 flags.Remove(btn);
+                visitedCell.Remove(btn);
             }
             else
             {
                 flags.Add(btn);
                 btn.Background = flagImg;
+                visitedCell.Add(btn);
             }
             statusPanel.Content = "Мины: " + (mineLevel - flags.Count());
         }
