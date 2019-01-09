@@ -9,50 +9,57 @@ using System.Windows.Threading;
 
 namespace Miner
 {
-    enum Level  { Beginner, Intermediate, Expert }
 
     public partial class MainWindow : Window
     {
         static int time = 0;
-        static int freeCell = 0;
-        static bool firstClick = true;
-        static int size1 = 9;
-        static int size2 = 9;
-        static int mineLevel = 10;
-        static int[,] map = new int[size1, size2];
+        static int freeCell = 0;  // число клеток незанятых минами
+        static bool firstClick = true;  // 
+        //static Button rightClick;
+        static int size1 = 9;  // размер поля по горизонтали
+        static int size2 = 9;  // размер поля по вертикали
+        static int mineLevel = 10;  // количество мин на поле
+        static int[,] map = new int[size1, size2];  // карта мин
         static Button[,] buttons = new Button[size1, size2];
-        static List<Button> flags = new List<Button>();
-        static int[,] cellStatus = new int[size1, size2];
+        static List<Button> flags = new List<Button>();  // клетки с флагами
+        static int[,] cellStatus = new int[size1, size2];  
         static List<Button> visitedCell = new List<Button>(); // список проверенных клеток
-        enum TimeControl { start, stop } // управление таймером
 
         public MainWindow()
         {
             InitializeComponent();
+
+
             btnRank.Click += ButtonRankClick;
             btnNew.Click += ButtonNewClick;
-            ChangeLevel(9, 9, 10);
+            statusPanel.Content = "Мины: " + mineLevel;
+            timePanel.Content = $"Время: {time}";
+            ChangeLevel(9, 9, 5);
         }
 
-        private void Timer(TimeControl value)
+        private void Timer(string value)
         {
             time = 0;
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(Timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 1);
-            if (value == TimeControl.start) timer.Start();
-            if (value == TimeControl.stop) timer.Stop();
+            if (value == "start") timer.Start();
+            if (value == "stop") timer.Stop();
         }
 
         private void NewGame(int m, int n)
         {
+            
             firstClick = false;
             freeCell = 0;
-            flags = new List<Button>();
-            visitedCell = new List<Button>();
+            //flags = new List<Button>();
+            //visitedCell = new List<Button>();
+            //visitedCell.Add(rightClick);
             map = new int[size1, size2];
             cellStatus = new int[size1, size2];
             int count = 0; // количество единиц в массиве
+
+
             Random random = new Random();
             while (count < mineLevel)
             {
@@ -68,12 +75,13 @@ namespace Miner
                     }
                 }
             }
+
             for (int i = 0; i < size1; i++)
                 for (int j = 0; j < size2; j++)
                     cellStatus[i, j] = map[i, j] == 1 ? 9 : CountMines(i, j);
         }
 
-        private static bool CellExist(int i, int size) => !(i < 0 || i >= size);
+        private static bool CellExist(int i, int size) => !(i < 0 || i >= size); // проверяет не находится ли клетка за пределами поля
 
         private static int CountMines(int i, int j)
         {
@@ -107,10 +115,8 @@ namespace Miner
                 CellPainter(i - 1, j + 1);
             if (CellExist(j - 1, size2))
                 CellPainter(i, j - 1);
-
             if (CellExist(i, size1) && CellExist(j, size2))
                 CellPainter(i, j);
-
             if (CellExist(j + 1, size2))
                 CellPainter(i, j + 1);
             if (CellExist(i + 1, size1) && CellExist(j - 1, size2))
@@ -123,17 +129,20 @@ namespace Miner
 
         private void Test(int i, int j)
         {
+            buttons[i, j].Background = Brushes.White;
             if (!visitedCell.Contains(buttons[i, j]) && !flags.Contains(buttons[i, j]))
             {
                 freeCell++;
-                timePanel.Content = freeCell;
+                //timePanel.Content = $"Время: {time}";
                 if (cellStatus[i, j] != 0)
                     buttons[i, j].Content = cellStatus[i, j];
 
                 if (freeCell == size1 * size2 - mineLevel)
                 {
                     Image("Flag.bmp");
+                    Field.IsEnabled = false;  // игровое поле становится неактивным
                     MessageBox.Show("Это успех!");
+                    Timer("stop");
                 }
             }
             visitedCell.Add(buttons[i, j]);
@@ -141,52 +150,54 @@ namespace Miner
 
         private void CellPainter(int i, int j)
         {
-            buttons[i, j].Background = Brushes.White;
-            switch (cellStatus[i, j])
+            if (!visitedCell.Contains(buttons[i, j]))  // условие не дает открыть клетку с флагом
             {
-                case 0:
-                    if (!visitedCell.Contains(buttons[i, j]))
-                    {
+                switch (cellStatus[i, j])
+                {
+                    case 0:
+                        if (!visitedCell.Contains(buttons[i, j]))
+                        {
+                            Test(i, j);
+                            EmptySpaces(i, j);
+                        }
+                        break;
+                    case 1:
+                        buttons[i, j].Foreground = Brushes.Blue;
                         Test(i, j);
-                        EmptySpaces(i, j);
-                    }
-                    break;
-                case 1:
-                    buttons[i, j].Foreground = Brushes.Blue;
-                    Test(i, j);
-                    break;
-                case 2:
-                    buttons[i, j].Foreground = Brushes.Green;
-                    Test(i, j);
-                    break;
-                case 3:
-                    buttons[i, j].Foreground = Brushes.Red;
-                    Test(i, j);
-                    break;
-                case 4:
-                    buttons[i, j].Foreground = Brushes.DarkBlue;
-                    Test(i, j);
-                    break;
-                case 5:
-                    buttons[i, j].Foreground = Brushes.DarkRed;
-                    Test(i, j);
-                    break;
-                case 6:
-                    buttons[i, j].Foreground = Brushes.Aquamarine;
-                    Test(i, j);
-                    break;
-                case 7:
-                    buttons[i, j].Foreground = Brushes.Black;
-                    Test(i, j);
-                    break;
-                case 8:
-                    buttons[i, j].Foreground = Brushes.DarkGray;
-                    Test(i, j);
-                    break;
+                        break;
+                    case 2:
+                        buttons[i, j].Foreground = Brushes.Green;
+                        Test(i, j);
+                        break;
+                    case 3:
+                        buttons[i, j].Foreground = Brushes.Red;
+                        Test(i, j);
+                        break;
+                    case 4:
+                        buttons[i, j].Foreground = Brushes.DarkBlue;
+                        Test(i, j);
+                        break;
+                    case 5:
+                        buttons[i, j].Foreground = Brushes.DarkRed;
+                        Test(i, j);
+                        break;
+                    case 6:
+                        buttons[i, j].Foreground = Brushes.Aquamarine;
+                        Test(i, j);
+                        break;
+                    case 7:
+                        buttons[i, j].Foreground = Brushes.Black;
+                        Test(i, j);
+                        break;
+                    case 8:
+                        buttons[i, j].Foreground = Brushes.DarkGray;
+                        Test(i, j);
+                        break;
+                }
             }
         }
 
-        private void Image(string img, int i = 0, int j = 0)
+        private void Image(string img)
         {
             ImageBrush mineImg = new ImageBrush();
             mineImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\" + img));
@@ -211,7 +222,10 @@ namespace Miner
             size2 = s2;
             mineLevel = mineLvl;
             firstClick = true;
+            Field.IsEnabled = true;
             buttons = new Button[size1, size2];
+            visitedCell = new List<Button>();
+            flags = new List<Button>();
             Field.Children.Clear();
 
             for (int i = 0; i < size1; i++)
@@ -256,7 +270,6 @@ namespace Miner
             }
             statusPanel.Content = "Мины: " + (mineLevel);
             //timePanel.Content = $"Время: {time}";
-            timePanel.Content = 0;
         }
 
         private new void MouseLeftButtonDown(object sender, RoutedEventArgs e)
@@ -271,7 +284,12 @@ namespace Miner
 
             Button btn = sender as Button;
             if (firstClick)
+            {
+                Timer("start");
+                time = 0;
+                //timePanel.Content = $"Время: {time}";
                 NewGame(i, j);
+            }
 
             if (!flags.Contains(btn)) // если на клетке нет флага
             {
@@ -279,6 +297,8 @@ namespace Miner
                 {
                     Image("SMine.bmp");
                     btn.Background = mineImg;
+                    Field.IsEnabled = false;  // игровое поле становится неактивным
+                    Timer("stop");
                 }
                 else if (cellStatus[i, j] == 0)
                     EmptySpaces(i, j);
@@ -292,18 +312,36 @@ namespace Miner
             Button btn = sender as Button;
             ImageBrush flagImg = new ImageBrush();
             flagImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\Flag.bmp"));
-            if (flags.Contains(btn))
+            //var element = (UIElement)e.Source;
+            //int i = Grid.GetRow(element);
+            //int j = Grid.GetColumn(element);
+
+            if (firstClick) // условие позволяет расставить флаги до первого клика
             {
-                btn.Background = SystemColors.ControlLightBrush;
-                flags.Remove(btn);
-                visitedCell.Remove(btn);
+                visitedCell.Add(btn);
+                btn.Background = flagImg;
+                flags.Add(btn);
             }
+
             else
             {
-                flags.Add(btn);
-                btn.Background = flagImg;
-                visitedCell.Add(btn);
+                if (flags.Contains(btn))
+                {
+                    btn.Background = SystemColors.ControlLightBrush;
+                    flags.Remove(btn);
+                    visitedCell.Remove(btn);
+                }
+                else
+                {
+                    if (!visitedCell.Contains(btn)) // условие не дает поставить флаг в открытую клетку
+                    {
+                        flags.Add(btn);
+                        btn.Background = flagImg;
+                        visitedCell.Add(btn);
+                    }
+                }
             }
+            //mineLevel -= flags.Count();
             statusPanel.Content = "Мины: " + (mineLevel - flags.Count());
         }
 
@@ -315,9 +353,13 @@ namespace Miner
                 btn.Content = "";
             }
             firstClick = true;
+            Field.IsEnabled = true;  // игровое поле становится активным
             freeCell = 0;
+            visitedCell = new List<Button>();
+            flags = new List<Button>();
+
             statusPanel.Content = "Мины: " + mineLevel;
-            timePanel.Content = freeCell;
+            //timePanel.Content = $"Время: {time}";
         }
 
         private void ButtonRankClick(object sender, RoutedEventArgs e)
@@ -339,7 +381,7 @@ namespace Miner
         private void Timer_Tick(object sender, EventArgs e)
         {
             time++;
-            timePanel.Content = $"Время: {time}";
+            //timePanel.Content = $"Время: {time}";
         }
     }
 }
