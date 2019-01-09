@@ -15,7 +15,6 @@ namespace Miner
         static int time = 0;
         static int freeCell = 0;  // число клеток незанятых минами
         static bool firstClick = true;  // 
-        //static Button rightClick;
         static int size1 = 9;  // размер поля по горизонтали
         static int size2 = 9;  // размер поля по вертикали
         static int mineLevel = 10;  // количество мин на поле
@@ -52,9 +51,6 @@ namespace Miner
             
             firstClick = false;
             freeCell = 0;
-            //flags = new List<Button>();
-            //visitedCell = new List<Button>();
-            //visitedCell.Add(rightClick);
             map = new int[size1, size2];
             cellStatus = new int[size1, size2];
             int count = 0; // количество единиц в массиве
@@ -291,7 +287,7 @@ namespace Miner
                 NewGame(i, j);
             }
 
-            if (!flags.Contains(btn)) // если на клетке нет флага
+            if (!flags.Contains(btn) && !visitedCell.Contains(btn)) // если на клетке нет флага
             {
                 if (cellStatus[i, j] == 9)
                 {
@@ -312,15 +308,12 @@ namespace Miner
             Button btn = sender as Button;
             ImageBrush flagImg = new ImageBrush();
             flagImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\Flag.bmp"));
-            //var element = (UIElement)e.Source;
-            //int i = Grid.GetRow(element);
-            //int j = Grid.GetColumn(element);
 
             if (firstClick) // условие позволяет расставить флаги до первого клика
             {
                 visitedCell.Add(btn);
-                btn.Background = flagImg;
                 flags.Add(btn);
+                btn.Background = flagImg;
             }
 
             else
