@@ -13,6 +13,7 @@ namespace Miner
     public partial class MainWindow : Window
     {
         static int time = 0;
+        private DispatcherTimer timer = new DispatcherTimer();
         static int freeCell = 0;  // число клеток незанятых минами
         static bool firstClick = true;  // 
         static int size1 = 9;  // размер поля по горизонтали
@@ -21,40 +22,28 @@ namespace Miner
         static int[,] map = new int[size1, size2];  // карта мин
         static Button[,] buttons = new Button[size1, size2];
         static List<Button> flags = new List<Button>();  // клетки с флагами
-        static int[,] cellStatus = new int[size1, size2];  
         static List<Button> visitedCell = new List<Button>(); // список проверенных клеток
+        static int[,] cellStatus = new int[size1, size2];  
 
         public MainWindow()
         {
             InitializeComponent();
-
-
             btnRank.Click += ButtonRankClick;
             btnNew.Click += ButtonNewClick;
-            statusPanel.Content = "Мины: " + mineLevel;
-            timePanel.Content = $"Время: {time}";
-            ChangeLevel(9, 9, 5);
-        }
-
-        private void Timer(string value)
-        {
-            time = 0;
-            DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(Timer_Tick);
-            timer.Interval = new TimeSpan(0, 0, 1);
-            if (value == "start") timer.Start();
-            if (value == "stop") timer.Stop();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            statusPanel.Content = $"Мины: {mineLevel}";
+            timePanel.Content = $"Время: {time}";
+            ChangeLevel(9, 9, 10);
         }
 
         private void NewGame(int m, int n)
         {
-            
             firstClick = false;
             freeCell = 0;
             map = new int[size1, size2];
             cellStatus = new int[size1, size2];
             int count = 0; // количество единиц в массиве
-
 
             Random random = new Random();
             while (count < mineLevel)
@@ -129,16 +118,15 @@ namespace Miner
             if (!visitedCell.Contains(buttons[i, j]) && !flags.Contains(buttons[i, j]))
             {
                 freeCell++;
-                //timePanel.Content = $"Время: {time}";
                 if (cellStatus[i, j] != 0)
                     buttons[i, j].Content = cellStatus[i, j];
 
                 if (freeCell == size1 * size2 - mineLevel)
                 {
+                    timer.Stop();
                     Image("Flag.bmp");
                     Field.IsEnabled = false;  // игровое поле становится неактивным
                     MessageBox.Show("Это успех!");
-                    Timer("stop");
                 }
             }
             visitedCell.Add(buttons[i, j]);
@@ -218,6 +206,7 @@ namespace Miner
             size2 = s2;
             mineLevel = mineLvl;
             firstClick = true;
+            time = 0;
             Field.IsEnabled = true;
             buttons = new Button[size1, size2];
             visitedCell = new List<Button>();
@@ -265,7 +254,7 @@ namespace Miner
                     break;
             }
             statusPanel.Content = "Мины: " + (mineLevel);
-            //timePanel.Content = $"Время: {time}";
+            timePanel.Content = $"Время: {time}";
         }
 
         private new void MouseLeftButtonDown(object sender, RoutedEventArgs e)
@@ -281,9 +270,7 @@ namespace Miner
             Button btn = sender as Button;
             if (firstClick)
             {
-                Timer("start");
-                time = 0;
-                //timePanel.Content = $"Время: {time}";
+                timer.Start();
                 NewGame(i, j);
             }
 
@@ -291,10 +278,10 @@ namespace Miner
             {
                 if (cellStatus[i, j] == 9)
                 {
+                    timer.Stop();
                     Image("SMine.bmp");
                     btn.Background = mineImg;
                     Field.IsEnabled = false;  // игровое поле становится неактивным
-                    Timer("stop");
                 }
                 else if (cellStatus[i, j] == 0)
                     EmptySpaces(i, j);
@@ -324,6 +311,7 @@ namespace Miner
                     flags.Remove(btn);
                     visitedCell.Remove(btn);
                 }
+
                 else
                 {
                     if (!visitedCell.Contains(btn)) // условие не дает поставить флаг в открытую клетку
@@ -334,12 +322,12 @@ namespace Miner
                     }
                 }
             }
-            //mineLevel -= flags.Count();
             statusPanel.Content = "Мины: " + (mineLevel - flags.Count());
         }
 
         private void ButtonNewClick(object sender, RoutedEventArgs e)
         {
+            timer.Stop();
             foreach (var btn in buttons)
             {
                 btn.Background = SystemColors.ControlLightBrush;
@@ -350,13 +338,14 @@ namespace Miner
             freeCell = 0;
             visitedCell = new List<Button>();
             flags = new List<Button>();
-
+            time = 0;
             statusPanel.Content = "Мины: " + mineLevel;
-            //timePanel.Content = $"Время: {time}";
+            timePanel.Content = $"Время: {time}";
         }
 
         private void ButtonRankClick(object sender, RoutedEventArgs e)
         {
+            timer.Stop();
             switch (size2)
             {
                 case 9:
@@ -374,7 +363,7 @@ namespace Miner
         private void Timer_Tick(object sender, EventArgs e)
         {
             time++;
-            //timePanel.Content = $"Время: {time}";
+            timePanel.Content = $"Время: {time}";
         }
     }
 }
