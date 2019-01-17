@@ -13,7 +13,7 @@
             <Setter Property="Background" Value="Silver"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -38,24 +38,15 @@
             <RowDefinition x:Name="panelArea" Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition MaxWidth="68"></ColumnDefinition>
+            <ColumnDefinition MaxWidth="68"></ColumnDefinition>
+            <ColumnDefinition ></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        
-        <Button Grid.Column="0" Grid.Row="0" x:Name="btnNew" Content="Новая"  />
-        <Button Grid.Column="1" Grid.Row="0" x:Name="btnRank" Content="Уровень"  />
-        <UniformGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" x:Name="Field" VerticalAlignment="Bottom"/>
+
+        <Button Grid.Column="0" Grid.Row="0" x:Name="btnNew" Content="Новая" Margin="5 0 0 0" />
+        <Button Grid.Column="1" Grid.Row="0" x:Name="btnRank" Content="Уровень"  Margin="5 0 0 0" />
+        <UniformGrid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" x:Name="Field" VerticalAlignment="Bottom" Margin="5" />
         <Label  Grid.Column="0" Grid.Row="2" x:Name="statusPanel" />
         <Label  Grid.Column="1" Grid.Row="2" x:Name="timePanel" />
     </Grid>
-    <!--<DockPanel>
-        <Button DockPanel.Dock="Top" x:Name="btnNew" Content="New" Height="35"/>
-        <UniformGrid  DockPanel.Dock="Top" x:Name="Field" Height="320" Margin="0,0,0,0.5" VerticalAlignment="Bottom"/>
-        <DockPanel DockPanel.Dock="Bottom">
-            <Label DockPanel.Dock="Left" x:Name="statusPanel" Height="35" MinWidth="150"/>
-            <Label DockPanel.Dock="Right" x:Name="timer" Height="35"/>
-        </DockPanel>
-    </DockPanel>-->
-
-
 </Window>

@@ -15,7 +15,7 @@ namespace Miner
         static int time = 0;
         private DispatcherTimer timer = new DispatcherTimer();
         static int freeCell = 0;  // число клеток незанятых минами
-        static bool firstClick = true;  // 
+        bool firstClick = true;  // 
         static int size1 = 9;  // размер поля по горизонтали
         static int size2 = 9;  // размер поля по вертикали
         static int mineLevel = 10;  // количество мин на поле
@@ -32,8 +32,8 @@ namespace Miner
             btnNew.Click += ButtonNewClick;
             timer.Tick += new EventHandler(Timer_Tick);
             timer.Interval = TimeSpan.FromSeconds(1);
-            statusPanel.Content = $"Мины: {mineLevel}";
-            timePanel.Content = $"Время: {time}";
+            statusPanel.Content = $"Мины: {10}";
+            timePanel.Content = $"Время: {0}";
             ChangeLevel(9, 9, 10);
         }
 
@@ -62,8 +62,10 @@ namespace Miner
             }
 
             for (int i = 0; i < size1; i++)
+            {
                 for (int j = 0; j < size2; j++)
                     cellStatus[i, j] = map[i, j] == 1 ? 9 : CountMines(i, j);
+            }
         }
 
         private static bool CellExist(int i, int size) => !(i < 0 || i >= size); // проверяет не находится ли клетка за пределами поля
@@ -134,7 +136,7 @@ namespace Miner
 
         private void CellPainter(int i, int j)
         {
-            if (!visitedCell.Contains(buttons[i, j]))  // условие не дает открыть клетку с флагом
+            if (!visitedCell.Contains(buttons[i, j]))  // условие не позволяет открыть клетку с флагом
             {
                 switch (cellStatus[i, j])
                 {
@@ -184,14 +186,15 @@ namespace Miner
         private void Image(string img)
         {
             ImageBrush mineImg = new ImageBrush();
-            mineImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\" + img));
+            //mineImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Mine.bmp", UriKind.RelativeOrAbsolute));
+            mineImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/" + img, UriKind.RelativeOrAbsolute));
             for (int x = 0; x < size1; x++)
                 for (int y = 0; y < size2; y++)
                 {
                     if (flags.Contains(buttons[x, y])) // если флаг установлен неверно
                     {
                         ImageBrush testImg = new ImageBrush();
-                        testImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\ErrMine.bmp"));
+                        testImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/ErrMine.bmp", UriKind.RelativeOrAbsolute));
                         buttons[x, y].Background = testImg;
                     }
 
@@ -211,8 +214,9 @@ namespace Miner
             buttons = new Button[size1, size2];
             visitedCell = new List<Button>();
             flags = new List<Button>();
-            Field.Children.Clear();
+            Field.Children.Clear();  // очистить поле
 
+            // заполнить поле кнопками в соответсвии с размером поля
             for (int i = 0; i < size1; i++)
             {
                 for (int j = 0; j < size2; j++)
@@ -232,23 +236,23 @@ namespace Miner
             switch (s2)
             {
                 case 9:
-                    MainW.Height = 293;
-                    MainW.Width = 198;
-                    Field.Height = 198;
+                    MainW.SizeToContent = SizeToContent.WidthAndHeight;
+                    Field.Height = 207;
+                    Field.Width = 207;
                     Field.Rows = 9;
                     Field.Columns = 9;
                     break;
                 case 16:
-                    MainW.Height = 448;
-                    MainW.Width = 352;
-                    Field.Height = 352;
+                    MainW.SizeToContent = SizeToContent.WidthAndHeight;
+                    Field.Height = 368;
+                    Field.Width = 368;
                     Field.Rows = 16;
                     Field.Columns = 16;
                     break;
                 case 30:
-                    MainW.Height = 448;
-                    MainW.Width = 660;
-                    Field.Height = 352;
+                    MainW.SizeToContent = SizeToContent.WidthAndHeight;
+                    Field.Height = 368;
+                    Field.Width = 690;
                     Field.Rows = 16;
                     Field.Columns = 30;
                     break;
@@ -265,7 +269,7 @@ namespace Miner
             int j = Grid.GetColumn(element);
 
             ImageBrush mineImg = new ImageBrush();
-            mineImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\Mine.bmp"));
+            mineImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Mine.bmp", UriKind.RelativeOrAbsolute));
 
             Button btn = sender as Button;
             if (firstClick)
@@ -294,8 +298,7 @@ namespace Miner
         {
             Button btn = sender as Button;
             ImageBrush flagImg = new ImageBrush();
-            flagImg.ImageSource = new BitmapImage(new Uri(@"\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\images\Flag.bmp"));
-
+            flagImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Flag.bmp", UriKind.RelativeOrAbsolute));
             if (firstClick) // условие позволяет расставить флаги до первого клика
             {
                 visitedCell.Add(btn);
