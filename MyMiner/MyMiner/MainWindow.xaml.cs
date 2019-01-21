@@ -12,18 +12,19 @@ namespace Miner
 
     public partial class MainWindow : Window
     {
-        static int time = 0;
-        private DispatcherTimer timer = new DispatcherTimer();
+        static int size1;  // размер поля по горизонтали
+        static int size2;  // размер поля по вертикали
+        static int mineLevel;  // количество мин на поле
+        static int[,] map;  // карта мин
+        static int[,] cellStatus;
+        static List<Button> flags;  // клетки с флагами
+        static List<Button> visitedCell; // список проверенных клеток
+        static Button[,] buttons;
         static int freeCell = 0;  // число клеток незанятых минами
-        bool firstClick = true;  // 
-        static int size1 = 9;  // размер поля по горизонтали
-        static int size2 = 9;  // размер поля по вертикали
-        static int mineLevel = 10;  // количество мин на поле
-        static int[,] map = new int[size1, size2];  // карта мин
-        static Button[,] buttons = new Button[size1, size2];
-        static List<Button> flags = new List<Button>();  // клетки с флагами
-        static List<Button> visitedCell = new List<Button>(); // список проверенных клеток
-        static int[,] cellStatus = new int[size1, size2];  
+        static bool firstClick;  // 
+        static int time;
+        private DispatcherTimer timer = new DispatcherTimer();
+        //private string[] cellImage = { "Flag.bmp", "SMine.bmp", "ErrMine.bmp", "Mine.bmp" };
 
         public MainWindow()
         {
@@ -34,19 +35,14 @@ namespace Miner
             timer.Interval = TimeSpan.FromSeconds(1);
             statusPanel.Content = $"Мины: {10}";
             timePanel.Content = $"Время: {0}";
-            ChangeLevel(9, 9, 10);
+            ChangeLevel(9, 9, 10); // уровень сложности по-умолчанию
         }
 
         private void NewGame(int m, int n)
         {
-            firstClick = false;
-            freeCell = 0;
-            map = new int[size1, size2];
-            cellStatus = new int[size1, size2];
-            int count = 0; // количество единиц в массиве
-
             Random random = new Random();
-            while (count < mineLevel)
+            int count = 0; // количество единиц в массиве
+            while (count < mineLevel) // добавляем в map единицы случайным образом по количеству mineLevel
             {
                 int i = random.Next(size1);
                 int j = random.Next(size2);
@@ -60,7 +56,7 @@ namespace Miner
                     }
                 }
             }
-
+            // 0-8 количество мин в соседних клетках; 9 - в клетке мина
             for (int i = 0; i < size1; i++)
             {
                 for (int j = 0; j < size2; j++)
@@ -68,8 +64,10 @@ namespace Miner
             }
         }
 
-        private static bool CellExist(int i, int size) => !(i < 0 || i >= size); // проверяет не находится ли клетка за пределами поля
+        // проверяет не находится ли клетка за пределами поля
+        private static bool CellExist(int i, int size) => !(i < 0 || i >= size); 
 
+        // считает мины вокруг клетки
         private static int CountMines(int i, int j)
         {
             int mine = 0;
@@ -183,37 +181,43 @@ namespace Miner
             }
         }
 
+        // в случае выйгрыша на местах мин должны стоять изображение флагов
+        // в случе пройгрыша - изображение мин
         private void Image(string img)
         {
-            ImageBrush mineImg = new ImageBrush();
-            //mineImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Mine.bmp", UriKind.RelativeOrAbsolute));
-            mineImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/" + img, UriKind.RelativeOrAbsolute));
+            ImageBrush cellImage = new ImageBrush();
+            cellImage.ImageSource = new BitmapImage(new Uri("Images/" + img, UriKind.Relative));
             for (int x = 0; x < size1; x++)
                 for (int y = 0; y < size2; y++)
                 {
                     if (flags.Contains(buttons[x, y])) // если флаг установлен неверно
                     {
                         ImageBrush testImg = new ImageBrush();
-                        testImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/ErrMine.bmp", UriKind.RelativeOrAbsolute));
+                        testImg.ImageSource = new BitmapImage(new Uri("Images/ErrMine.bmp", UriKind.Relative));
                         buttons[x, y].Background = testImg;
                     }
 
                     if (map[x, y] == 1)
-                        buttons[x, y].Background = mineImg;
+                        buttons[x, y].Background = cellImage;
                 }
         }
 
+        // s1 - высота поля; s2 - ширина поля; mineLvl - количество мин на поле 
         private void ChangeLevel(int s1, int s2, int mineLvl)
         {
+            timer.Stop();
             size1 = s1;
             size2 = s2;
             mineLevel = mineLvl;
+            map = new int[size1, size2];
+            cellStatus = new int[size1, size2];
+            flags = new List<Button>();
+            visitedCell = new List<Button>();
+            buttons = new Button[size1, size2];
+            freeCell = 0;
             firstClick = true;
             time = 0;
             Field.IsEnabled = true;
-            buttons = new Button[size1, size2];
-            visitedCell = new List<Button>();
-            flags = new List<Button>();
             Field.Children.Clear();  // очистить поле
 
             // заполнить поле кнопками в соответсвии с размером поля
@@ -236,7 +240,7 @@ namespace Miner
             switch (s2)
             {
                 case 9:
-                    MainW.SizeToContent = SizeToContent.WidthAndHeight;
+                    MainW.SizeToContent = SizeToContent.WidthAndHeight; // размер окна под содержимое
                     Field.Height = 207;
                     Field.Width = 207;
                     Field.Rows = 9;
@@ -257,7 +261,7 @@ namespace Miner
                     Field.Columns = 30;
                     break;
             }
-            statusPanel.Content = "Мины: " + (mineLevel);
+            statusPanel.Content = $"Мины: {mineLevel}";
             timePanel.Content = $"Время: {time}";
         }
 
@@ -269,11 +273,12 @@ namespace Miner
             int j = Grid.GetColumn(element);
 
             ImageBrush mineImg = new ImageBrush();
-            mineImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Mine.bmp", UriKind.RelativeOrAbsolute));
+            mineImg.ImageSource = new BitmapImage(new Uri("Images/Mine.bmp", UriKind.Relative));
 
             Button btn = sender as Button;
             if (firstClick)
             {
+                firstClick = false;
                 timer.Start();
                 NewGame(i, j);
             }
@@ -298,7 +303,7 @@ namespace Miner
         {
             Button btn = sender as Button;
             ImageBrush flagImg = new ImageBrush();
-            flagImg.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/Flag.bmp", UriKind.RelativeOrAbsolute));
+            flagImg.ImageSource = new BitmapImage(new Uri("Images/Flag.bmp", UriKind.Relative));
             if (firstClick) // условие позволяет расставить флаги до первого клика
             {
                 visitedCell.Add(btn);
@@ -330,25 +335,11 @@ namespace Miner
 
         private void ButtonNewClick(object sender, RoutedEventArgs e)
         {
-            timer.Stop();
-            foreach (var btn in buttons)
-            {
-                btn.Background = SystemColors.ControlLightBrush;
-                btn.Content = "";
-            }
-            firstClick = true;
-            Field.IsEnabled = true;  // игровое поле становится активным
-            freeCell = 0;
-            visitedCell = new List<Button>();
-            flags = new List<Button>();
-            time = 0;
-            statusPanel.Content = "Мины: " + mineLevel;
-            timePanel.Content = $"Время: {time}";
+            ChangeLevel(size1, size2, mineLevel);
         }
 
         private void ButtonRankClick(object sender, RoutedEventArgs e)
         {
-            timer.Stop();
             switch (size2)
             {
                 case 9:

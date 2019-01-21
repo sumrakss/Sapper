@@ -1,0 +1,14 @@
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\bin\Debug\MyMiner.exe.config
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\bin\Debug\MyMiner.exe
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\bin\Debug\MyMiner.pdb
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MainWindow.g.cs
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\App.g.cs
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner_MarkupCompile.cache
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner_MarkupCompile.lref
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MainWindow.baml
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.g.resources
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.Properties.Resources.resources
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.csproj.GenerateResource.cache
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.csproj.CoreCompileInputs.cache
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.exe
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.pdb

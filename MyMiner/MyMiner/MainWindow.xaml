@@ -38,8 +38,8 @@
             <RowDefinition x:Name="panelArea" Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MaxWidth="68"></ColumnDefinition>
-            <ColumnDefinition MaxWidth="68"></ColumnDefinition>
+            <ColumnDefinition MaxWidth="70"></ColumnDefinition>
+            <ColumnDefinition MaxWidth="70"></ColumnDefinition>
             <ColumnDefinition ></ColumnDefinition>
         </Grid.ColumnDefinitions>
 

@@ -97,19 +97,27 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Resource Include="Images\ErrMine.bmp" />
+    <Resource Include="Images\ErrMine.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Flag.bmp" />
+    <Resource Include="Images\Flag.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Mine.bmp" />
+    <Resource Include="Images\Mine.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\sc.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\SMine.bmp" />
+    <Resource Include="Images\SMine.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
