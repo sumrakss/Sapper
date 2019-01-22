@@ -126,15 +126,6 @@
         APD/8AmQmQD/8P/wmfAJkP/w//mQAACZ//D/mfAAAPmf8Pmf//D//5nw////8P////D/////////8A==
 </value>
   </data>
-  <data name="Flag" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        Qk32AAAAAAAAAHYAAAAoAAAAEAAAABAAAAABAAQAAAAAAAAAAAASCwAAEgsAABAAAAAQAAAAAAAA/wAA
-        gP8AgAD/AICA/4AAAP+AAID/gIAA/4CAgP/AwMD/AAD//wD/AP8A/////wAA//8A/////wD//////4iI
-        iIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIAAAAAIiIiIgAAAAAiIiIiIgAAIiIiIiIiIgIiIiIiIiIiAiI
-        iIiIiIiJmIiIiIiIiZmYiIiIiIiZmZiIiIiIiImZmIiIiIiIiImYiIiIiIiIiIiIiIiIiIiIiIiIiIiI
-        iIiIiIiI
-</value>
-  </data>
   <data name="Mine" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         Qk3uAAAAAAAAAHYAAAAoAAAADwAAAA8AAAABAAQAAAAAAAAAAAASCwAAEgsAABAAAAAQAAAAAAAA/wAA
@@ -154,5 +145,8 @@
         ///////w////8P////D////w////8P/w8AAA8P/w//8AAAAP//D/8AAAAAD/8P/wAAAAAP/x8AAAAAAA
         APD/8A/wAAD/8P/wD/AAAP/w//8AAAAP//D/8PAAAPD/8P////D////w////8P////D/////////8A==
 </value>
+  </data>
+  <data name="Flag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\Flag.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

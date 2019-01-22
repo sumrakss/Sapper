@@ -20,11 +20,10 @@ namespace Miner
         static List<Button> flags;  // клетки с флагами
         static List<Button> visitedCell; // список проверенных клеток
         static Button[,] buttons;
-        static int freeCell = 0;  // число клеток незанятых минами
+        private static int freeCell = 0;  // число клеток не занятых минами
         static bool firstClick;  // 
         static int time;
         private DispatcherTimer timer = new DispatcherTimer();
-        //private string[] cellImage = { "Flag.bmp", "SMine.bmp", "ErrMine.bmp", "Mine.bmp" };
 
         public MainWindow()
         {
@@ -219,7 +218,6 @@ namespace Miner
             time = 0;
             Field.IsEnabled = true;
             Field.Children.Clear();  // очистить поле
-
             // заполнить поле кнопками в соответсвии с размером поля
             for (int i = 0; i < size1; i++)
             {
@@ -237,7 +235,14 @@ namespace Miner
                 }
             }
 
-            switch (s2)
+            ResizeWindow(s2);
+            statusPanel.Content = $"Мины: {mineLevel}";
+            timePanel.Content = $"Время: {time}";
+        }
+
+        private void ResizeWindow(int size)
+        {
+            switch (size)
             {
                 case 9:
                     MainW.SizeToContent = SizeToContent.WidthAndHeight; // размер окна под содержимое
@@ -261,8 +266,6 @@ namespace Miner
                     Field.Columns = 30;
                     break;
             }
-            statusPanel.Content = $"Мины: {mineLevel}";
-            timePanel.Content = $"Время: {time}";
         }
 
         private new void MouseLeftButtonDown(object sender, RoutedEventArgs e)
@@ -330,7 +333,7 @@ namespace Miner
                     }
                 }
             }
-            statusPanel.Content = "Мины: " + (mineLevel - flags.Count());
+            statusPanel.Content = $"Мины: {mineLevel - flags.Count()}";
         }
 
         private void ButtonNewClick(object sender, RoutedEventArgs e)

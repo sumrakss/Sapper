@@ -12,3 +12,4 @@
 \\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.csproj.CoreCompileInputs.cache
 \\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.exe
 \\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.pdb
+\\Mac\Home\Documents\MyMiner\MyMiner\MyMiner\obj\Debug\MyMiner.csprojAssemblyReference.cache
